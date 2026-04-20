@@ -60,8 +60,7 @@ ipcMain.handle('smtp:save', async (event, config) => {
   try {
     store.set('smtp', {
       email: config.email,
-      password: config.password,
-      senderName: config.senderName
+      password: config.password
     });
     return { success: true };
   } catch (err) {
@@ -80,7 +79,6 @@ ipcMain.handle('smtp:load', async () => {
       data: {
         email: config.email,
         password: '••••••••',
-        senderName: config.senderName,
         hasSaved: true
       }
     };
@@ -151,7 +149,7 @@ ipcMain.handle('mail:send', async (event, { subject, recipients, htmlBody }) => 
     for (const to of recipients) {
       try {
         await transporter.sendMail({
-          from: `"${config.senderName}" <${config.email}>`,
+          from: config.email,
           to,
           subject,
           html: htmlBody

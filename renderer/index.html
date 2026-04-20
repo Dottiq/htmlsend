@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- セキュリティ: インラインスクリプト・外部リソースを制限 -->
+  <!-- srcdocのiframeは 'self' で許可、ローカル画像の読み込みのためfile:も許可 -->
   <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-src blob: data:;">
+    content="default-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-src 'self' file:;">
   <title>HTMLSend</title>
   <!-- Google Fonts（オフライン時はフォールバックフォントを使用） -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -38,10 +39,6 @@
             <label class="form-label" for="input-password">アプリパスワード</label>
             <input class="form-input" type="password" id="input-password" placeholder="xxxx xxxx xxxx xxxx" autocomplete="off">
           </div>
-          <div class="form-group">
-            <label class="form-label" for="input-sender-name">差出人表示名</label>
-            <input class="form-input" type="text" id="input-sender-name" placeholder="Your Name" autocomplete="off">
-          </div>
           <div class="form-row">
             <button class="btn btn--primary" id="btn-smtp-save">設定を保存</button>
             <button class="btn btn--ghost" id="btn-smtp-clear">削除</button>
@@ -60,6 +57,11 @@
             <button class="btn btn--outline" id="btn-file-select">ファイルを選択</button>
           </div>
           <p class="file-name" id="file-name"></p>
+          <!-- HTMLコード直接ペーストエリア -->
+          <div class="form-group">
+            <label class="form-label" for="input-html-paste">HTMLを直接ペースト</label>
+            <textarea class="form-textarea form-textarea--code" id="input-html-paste" rows="6" placeholder="HTMLコードをここに貼り付け"></textarea>
+          </div>
         </section>
 
         <hr class="divider">

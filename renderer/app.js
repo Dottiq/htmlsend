@@ -6,7 +6,6 @@
    =========================== */
 const inputEmail = document.getElementById('input-email');
 const inputPassword = document.getElementById('input-password');
-const inputSenderName = document.getElementById('input-sender-name');
 const btnSmtpSave = document.getElementById('btn-smtp-save');
 const btnSmtpClear = document.getElementById('btn-smtp-clear');
 const smtpStatus = document.getElementById('smtp-status');
@@ -19,6 +18,8 @@ const inputSubject = document.getElementById('input-subject');
 const inputRecipients = document.getElementById('input-recipients');
 const btnSend = document.getElementById('btn-send');
 const sendLog = document.getElementById('send-log');
+
+const inputHtmlPaste = document.getElementById('input-html-paste');
 
 const previewIframe = document.getElementById('preview-iframe');
 const previewEmpty = document.getElementById('preview-empty');
@@ -37,7 +38,6 @@ async function loadSmtpConfig() {
   if (result.success && result.data) {
     inputEmail.value = result.data.email;
     inputPassword.value = result.data.password; // マスク済みの文字列
-    inputSenderName.value = result.data.senderName;
     showSmtpStatus('設定済み', 'success');
   }
 }
@@ -46,7 +46,6 @@ async function loadSmtpConfig() {
 btnSmtpSave.addEventListener('click', async () => {
   const email = inputEmail.value.trim();
   const password = inputPassword.value.trim();
-  const senderName = inputSenderName.value.trim();
 
   if (!email || !password) {
     showSmtpStatus('メールアドレスとアプリパスワードは必須です。', 'error');
@@ -59,7 +58,7 @@ btnSmtpSave.addEventListener('click', async () => {
     return;
   }
 
-  const result = await window.electronApi.smtpSave({ email, password, senderName });
+  const result = await window.electronApi.smtpSave({ email, password });
   if (result.success) {
     showSmtpStatus('保存しました。', 'success');
     // パスワード欄をマスク表示に切り替え
@@ -75,7 +74,6 @@ btnSmtpClear.addEventListener('click', async () => {
   if (result.success) {
     inputEmail.value = '';
     inputPassword.value = '';
-    inputSenderName.value = '';
     showSmtpStatus('設定を削除しました。', 'success');
   } else {
     showSmtpStatus(`削除失敗: ${result.error}`, 'error');
@@ -140,20 +138,60 @@ async function loadHtmlFile(filePath) {
     return;
   }
 
-  currentHtmlBody = result.content;
+  // ペーストエリアにも反映（どちらで入力しても同じ変数に格納）
+  inputHtmlPaste.value = result.content;
 
   // ファイル名を表示（パスの最後の部分のみ）
   const baseName = filePath.split('/').pop().split('\\').pop();
   fileName.textContent = `✓ ${baseName}`;
   fileName.className = 'file-name file-name--loaded';
 
-  // プレビューをiframeに表示（blob URLを使用してsandbox内でレンダリング）
-  const blob = new Blob([result.content], { type: 'text/html' });
-  const blobUrl = URL.createObjectURL(blob);
-  previewIframe.src = blobUrl;
+  // ファイルのディレクトリパスを取得（相対パス画像用）
+  const dirPath = filePath.replace(/[^/\\]+$/, '');
+
+  updatePreview(result.content, dirPath);
+}
+
+// プレビューを更新する共通関数
+// srcdoc方式でHTMLをそのまま流し込み、base要素で相対パスを解決する
+function updatePreview(htmlContent, baseDirPath) {
+  currentHtmlBody = htmlContent;
+
+  // base要素を挿入してファイルベースの相対パスを解決する
+  // baseDirPathが指定されている場合のみ挿入（ペースト時は省略）
+  let htmlToRender = htmlContent;
+  if (baseDirPath) {
+    const baseTag = `<base href="file://${baseDirPath}">`;
+    // head要素内の先頭に挿入、なければhtml先頭に追加
+    if (/<head[\s>]/i.test(htmlContent)) {
+      htmlToRender = htmlContent.replace(/(<head[^>]*>)/i, `$1${baseTag}`);
+    } else {
+      htmlToRender = baseTag + htmlContent;
+    }
+  }
+
+  // srcdocにHTMLを直接流し込む（外部リソースもallow-same-originで読み込み可能）
+  previewIframe.srcdoc = htmlToRender;
   previewIframe.classList.add('preview-iframe--visible');
   previewEmpty.classList.add('preview-empty--hidden');
 }
+
+// ペーストエリアへの入力でリアルタイムプレビュー更新
+inputHtmlPaste.addEventListener('input', () => {
+  const html = inputHtmlPaste.value;
+  if (html.trim().length === 0) {
+    // 空になったらプレビューをリセット
+    currentHtmlBody = null;
+    previewIframe.srcdoc = '';
+    previewIframe.classList.remove('preview-iframe--visible');
+    previewEmpty.classList.remove('preview-empty--hidden');
+    fileName.textContent = '';
+    fileName.className = 'file-name';
+    return;
+  }
+  // ペースト時はbaseDirPathなし（相対パス解決なし）
+  updatePreview(html, null);
+});
 
 /* ===========================
    メール送信

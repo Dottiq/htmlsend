@@ -203,6 +203,14 @@ body {
   line-height: 1.5;
 }
 
+/* コードペースト用テキストエリア（等幅フォント・少し背景を変える） */
+.form-textarea--code {
+  font-family: 'Menlo', 'Consolas', 'Monaco', monospace;
+  font-size: 11px;
+  background-color: #faf9f7;
+  line-height: 1.6;
+}
+
 .form-row {
   display: flex;
   gap: 8px;
