@@ -128,7 +128,16 @@ body {
   color: var(--color-muted);
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+/* セクションタイトルとファイル名を同じ行に横並びで表示するラッパー */
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
   margin-bottom: 6px;
+  min-width: 0;
 }
 
 /* --- 区切り線 --- */
@@ -306,11 +315,11 @@ body {
 }
 
 /* --- HTMLファイルセクション --- */
-/* D&Dゾーンとアクションエリアを横並び */
+/* D&Dゾーンとブラウザ確認ボタンを横並び */
 .file-row {
   display: flex;
   gap: 12px;
-  align-items: stretch;
+  align-items: flex-end;
 }
 
 /* --- ドロップゾーン --- */
@@ -345,26 +354,27 @@ body {
   color: var(--color-muted);
 }
 
-/* ファイル名表示・ブラウザ確認ボタンをまとめるサイドエリア */
-.file-side {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 8px;
-  min-width: 160px;
-}
-
-/* 読み込み済みファイル名 */
+/* 読み込み済みファイル名（タイトル行右横に表示） */
 .file-name {
   font-size: 11px;
-  color: var(--color-muted);
-  word-break: break-all;
-  min-height: 14px;
+  color: var(--color-success);
+  /* 長いファイル名は省略表示 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
 }
 
-.file-name--loaded {
-  color: var(--color-success);
+/* HTMLが未読み込み時は非表示 */
+.file-name--hidden {
+  display: none;
+}
+
+/* ブラウザ確認ボタン（D&Dエリアの右・下揃え） */
+.btn--preview {
+  align-self: flex-end;
+  flex-shrink: 0;
 }
 
 /* --- 送信ログ --- */

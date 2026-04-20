@@ -53,18 +53,19 @@
 
         <!-- 2. HTMLファイル -->
         <section class="section" id="section-file">
-          <h2 class="section__title">HTMLファイル</h2>
-          <!-- D&DゾーンとアクションエリアをFlexで横並び -->
+          <!-- セクションタイトルとファイル名を同じ行に横並び。未読み込み時はfile-nameを非表示 -->
+          <div class="section-header">
+            <h2 class="section__title">HTMLファイル</h2>
+            <p class="file-name file-name--hidden" id="file-name"></p>
+          </div>
+          <!-- D&DゾーンとブラウザボタンをFlexで横並び、ボタンは下揃え -->
           <div class="file-row">
             <div class="drop-zone" id="drop-zone">
               <p class="drop-zone__text">ここにドロップ</p>
               <p class="drop-zone__sub">または</p>
               <button class="btn btn--outline" id="btn-file-select">ファイルを選択</button>
             </div>
-            <div class="file-side">
-              <p class="file-name" id="file-name"></p>
-              <button class="btn btn--outline" id="btn-preview" disabled>ブラウザで確認する</button>
-            </div>
+            <button class="btn btn--accent btn--preview" id="btn-preview" disabled>ブラウザで確認する</button>
           </div>
         </section>
 

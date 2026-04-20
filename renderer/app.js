@@ -118,6 +118,7 @@ dropZone.addEventListener('drop', async (e) => {
   const file = files[0];
   // HTMLファイルのみ受け付ける
   if (!file.name.match(/\.html?$/i)) {
+    // エラー時はファイル名エリアを表示してエラーメッセージを出す
     fileName.textContent = 'HTMLファイルのみ対応しています。';
     fileName.className = 'file-name form-status--error';
     return;
@@ -127,10 +128,11 @@ dropZone.addEventListener('drop', async (e) => {
   await loadHtmlFile(file.path);
 });
 
-// HTMLファイルを読み込んでプレビューに表示
+// HTMLファイルを読み込む
 async function loadHtmlFile(filePath) {
   const result = await window.electronApi.fileRead(filePath);
   if (!result.success) {
+    // エラー時はタイトル行右横にエラーメッセージを表示
     fileName.textContent = `読み込みエラー: ${result.error}`;
     fileName.className = 'file-name form-status--error';
     return;
@@ -139,10 +141,11 @@ async function loadHtmlFile(filePath) {
   // ペーストエリアにも反映（どちらで入力しても同じ変数に格納）
   inputHtmlPaste.value = result.content;
 
-  // ファイル名を表示（パスの最後の部分のみ）
+  // ファイル名をタイトル行右横に表示（パスの最後の部分のみ）
   const baseName = filePath.split('/').pop().split('\\').pop();
   fileName.textContent = `✓ ${baseName}`;
-  fileName.className = 'file-name file-name--loaded';
+  // hidden クラスを外して表示する
+  fileName.className = 'file-name';
 
   setHtmlContent(result.content);
 }
@@ -158,8 +161,9 @@ function setHtmlContent(htmlContent) {
 function clearHtmlContent() {
   currentHtmlBody = null;
   btnPreview.disabled = true;
+  // ファイル名をクリアして非表示に戻す
   fileName.textContent = '';
-  fileName.className = 'file-name';
+  fileName.className = 'file-name file-name--hidden';
 }
 
 // ペーストエリアへの入力で状態を更新
