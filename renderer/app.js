@@ -20,9 +20,7 @@ const btnSend = document.getElementById('btn-send');
 const sendLog = document.getElementById('send-log');
 
 const inputHtmlPaste = document.getElementById('input-html-paste');
-
-const previewIframe = document.getElementById('preview-iframe');
-const previewEmpty = document.getElementById('preview-empty');
+const btnPreview = document.getElementById('btn-preview');
 
 /* ===========================
    状態管理
@@ -146,51 +144,42 @@ async function loadHtmlFile(filePath) {
   fileName.textContent = `✓ ${baseName}`;
   fileName.className = 'file-name file-name--loaded';
 
-  // ファイルのディレクトリパスを取得（相対パス画像用）
-  const dirPath = filePath.replace(/[^/\\]+$/, '');
-
-  updatePreview(result.content, dirPath);
+  setHtmlContent(result.content);
 }
 
-// プレビューを更新する共通関数
-// srcdoc方式でHTMLをそのまま流し込み、base要素で相対パスを解決する
-function updatePreview(htmlContent, baseDirPath) {
+// HTMLコンテンツを状態に格納してプレビューボタンを有効化する
+function setHtmlContent(htmlContent) {
   currentHtmlBody = htmlContent;
-
-  // base要素を挿入してファイルベースの相対パスを解決する
-  // baseDirPathが指定されている場合のみ挿入（ペースト時は省略）
-  let htmlToRender = htmlContent;
-  if (baseDirPath) {
-    const baseTag = `<base href="file://${baseDirPath}">`;
-    // head要素内の先頭に挿入、なければhtml先頭に追加
-    if (/<head[\s>]/i.test(htmlContent)) {
-      htmlToRender = htmlContent.replace(/(<head[^>]*>)/i, `$1${baseTag}`);
-    } else {
-      htmlToRender = baseTag + htmlContent;
-    }
-  }
-
-  // srcdocにHTMLを直接流し込む（外部リソースもallow-same-originで読み込み可能）
-  previewIframe.srcdoc = htmlToRender;
-  previewIframe.classList.add('preview-iframe--visible');
-  previewEmpty.classList.add('preview-empty--hidden');
+  // HTMLが設定されたらプレビューボタンを有効化
+  btnPreview.disabled = false;
 }
 
-// ペーストエリアへの入力でリアルタイムプレビュー更新
+// HTMLがクリアされたときの処理
+function clearHtmlContent() {
+  currentHtmlBody = null;
+  btnPreview.disabled = true;
+  fileName.textContent = '';
+  fileName.className = 'file-name';
+}
+
+// ペーストエリアへの入力で状態を更新
 inputHtmlPaste.addEventListener('input', () => {
   const html = inputHtmlPaste.value;
   if (html.trim().length === 0) {
-    // 空になったらプレビューをリセット
-    currentHtmlBody = null;
-    previewIframe.srcdoc = '';
-    previewIframe.classList.remove('preview-iframe--visible');
-    previewEmpty.classList.remove('preview-empty--hidden');
-    fileName.textContent = '';
-    fileName.className = 'file-name';
+    clearHtmlContent();
     return;
   }
-  // ペースト時はbaseDirPathなし（相対パス解決なし）
-  updatePreview(html, null);
+  setHtmlContent(html);
+});
+
+// 「ブラウザで確認する」ボタン — 一時ファイルに書き出してデフォルトブラウザで開く
+btnPreview.addEventListener('click', async () => {
+  if (!currentHtmlBody) return;
+  const result = await window.electronApi.previewOpen(currentHtmlBody);
+  if (!result.success) {
+    // エラーはログエリアに表示
+    appendLog({ to: '', success: false, error: `プレビュー失敗: ${result.error}` }, true);
+  }
 });
 
 /* ===========================

@@ -1,6 +1,6 @@
 // Electronメインプロセス・nodemailer送信処理・IPC受信
 
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const nodemailer = require('nodemailer');
@@ -118,6 +118,21 @@ ipcMain.handle('file:dialog', async () => {
       return { success: true, filePath: null };
     }
     return { success: true, filePath: result.filePaths[0] };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+});
+
+// IPC: HTMLを一時ファイルに書き出してデフォルトブラウザで開く
+ipcMain.handle('preview:open', async (event, htmlContent) => {
+  try {
+    // 一時ディレクトリにファイルを保存
+    const tempDir = app.getPath('temp');
+    const tempFilePath = path.join(tempDir, 'htmlsend-preview.html');
+    fs.writeFileSync(tempFilePath, htmlContent, 'utf-8');
+    // shell.openExternal でデフォルトブラウザを起動
+    await shell.openExternal(`file://${tempFilePath}`);
+    return { success: true };
   } catch (err) {
     return { success: false, error: err.message };
   }

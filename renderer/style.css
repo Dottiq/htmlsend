@@ -63,6 +63,7 @@ body {
 .app-header {
   /* macOSのhiddenInset用にドラッグ可能にする */
   -webkit-app-region: drag;
+  position: relative;
   height: var(--titlebar-height);
   display: flex;
   align-items: center;
@@ -73,11 +74,16 @@ body {
 }
 
 .app-title {
+  /* ウィンドウ幅の中央に配置（トラフィックライトボタンと重ならないようabsoluteを使用） */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 6px;
-  /* タイトル内のボタン等はドラッグ無効化 */
+  /* タイトル内はドラッグ無効化 */
   -webkit-app-region: no-drag;
+  pointer-events: none;
 }
 
 .app-title__icon {
@@ -424,35 +430,27 @@ body {
 }
 
 .preview-body {
-  position: relative;
   flex: 1;
-  overflow: hidden;
-}
-
-.preview-iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-  display: none;
-}
-
-.preview-iframe--visible {
-  display: block;
-}
-
-.preview-empty {
-  position: absolute;
-  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  color: var(--color-muted);
-  font-size: 13px;
-  line-height: 1.7;
-  pointer-events: none;
 }
 
-.preview-empty--hidden {
-  display: none;
+/* ブラウザ起動エリア */
+.preview-launch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.preview-launch__desc {
+  font-size: 13px;
+  color: var(--color-text);
+}
+
+.preview-launch__hint {
+  font-size: 11px;
+  color: var(--color-muted);
 }

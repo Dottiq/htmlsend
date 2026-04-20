@@ -20,5 +20,8 @@ contextBridge.exposeInMainWorld('electronApi', {
   fileDialog: () => ipcRenderer.invoke('file:dialog'),
 
   // メールを送信する
-  mailSend: (params) => ipcRenderer.invoke('mail:send', params)
+  mailSend: (params) => ipcRenderer.invoke('mail:send', params),
+
+  // HTMLを一時ファイルに書き出してデフォルトブラウザで開く
+  previewOpen: (htmlContent) => ipcRenderer.invoke('preview:open', htmlContent)
 });

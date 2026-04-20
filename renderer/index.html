@@ -4,9 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- セキュリティ: インラインスクリプト・外部リソースを制限 -->
-  <!-- srcdocのiframeは 'self' で許可、ローカル画像の読み込みのためfile:も許可 -->
   <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-src 'self' file:;">
+    content="default-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
   <title>HTMLSend</title>
   <!-- Google Fonts（オフライン時はフォールバックフォントを使用） -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,6 +17,7 @@
   <div class="app-wrapper">
     <!-- タイトルバー（macOSのhiddenInset用ドラッグ領域） -->
     <header class="app-header">
+      <!-- アプリ名はabsoluteでウィンドウ中央に配置（トラフィックライトと重ならない） -->
       <div class="app-title">
         <span class="app-title__icon">✉</span>
         <span class="app-title__name">HTMLSend</span>
@@ -87,15 +87,16 @@
 
       </aside>
 
-      <!-- 右ペイン：HTMLプレビュー -->
+      <!-- 右ペイン：ブラウザプレビュー -->
       <main class="pane pane--right">
         <div class="preview-header">
           <span class="preview-header__label">プレビュー</span>
         </div>
         <div class="preview-body">
-          <iframe class="preview-iframe" id="preview-iframe" title="HTMLプレビュー" sandbox="allow-same-origin"></iframe>
-          <div class="preview-empty" id="preview-empty">
-            <p>HTMLファイルを読み込むと<br>ここにプレビューが表示されます</p>
+          <div class="preview-launch">
+            <p class="preview-launch__desc">HTMLをデフォルトブラウザで確認します</p>
+            <button class="btn btn--outline" id="btn-preview" disabled>ブラウザで確認する</button>
+            <p class="preview-launch__hint">HTMLを読み込むとボタンが有効になります</p>
           </div>
         </div>
       </main>
