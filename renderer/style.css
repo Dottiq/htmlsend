@@ -1,6 +1,7 @@
 /* ===================================================
    HTMLSend — スタイルシート
    Noble (nobusue.com/tools) テイストに合わせたデザイン
+   1カラム・スクロールなしレイアウト（960×760基準）
    =================================================== */
 
 /* --- CSS変数（カラー・フォント） --- */
@@ -21,8 +22,6 @@
 
   --radius: 6px;
   --radius-sm: 4px;
-  --shadow-sm: 0 1px 3px rgba(74, 70, 67, 0.08);
-  --shadow-md: 0 2px 8px rgba(74, 70, 67, 0.12);
 
   /* macOS hiddenInset用のタイトルバー高さ */
   --titlebar-height: 38px;
@@ -47,8 +46,8 @@ body {
   background-color: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-body);
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: 12px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -57,6 +56,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  overflow: hidden;
 }
 
 /* --- ヘッダー（タイトルバー） --- */
@@ -67,7 +67,6 @@ body {
   height: var(--titlebar-height);
   display: flex;
   align-items: center;
-  padding: 0 16px;
   background-color: var(--color-bg);
   border-bottom: 1px solid var(--color-border);
   flex-shrink: 0;
@@ -78,115 +77,94 @@ body {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  /* タイトル内はドラッグ無効化 */
   -webkit-app-region: no-drag;
   pointer-events: none;
 }
 
-.app-title__icon {
-  font-size: 14px;
-  color: var(--color-accent);
-}
-
 .app-title__name {
   font-family: var(--font-heading);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--color-text);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
 }
 
-/* --- メインボディ（左右ペイン） --- */
+/* --- メインボディ（1カラム） --- */
 .app-body {
-  display: flex;
   flex: 1;
   overflow: hidden;
-}
-
-/* --- 左ペイン --- */
-.pane--left {
-  width: 340px;
-  min-width: 280px;
-  flex-shrink: 0;
   display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  background-color: var(--color-bg);
-  border-right: 1px solid var(--color-border);
-  padding: 20px 16px;
-  gap: 0;
+  justify-content: center;
 }
 
-/* スクロールバーのスタイル（macOS） */
-.pane--left::-webkit-scrollbar {
-  width: 4px;
-}
-.pane--left::-webkit-scrollbar-track {
-  background: transparent;
-}
-.pane--left::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 2px;
-}
-
-/* --- 右ペイン（プレビュー） --- */
-.pane--right {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+/* --- コンテンツエリア --- */
+/* 760px - タイトルバー38px = 722px。padding上下16pxで内部690px */
+.content-area {
+  width: 100%;
+  max-width: 760px;
+  padding: 16px 32px;
   overflow: hidden;
-  background-color: var(--color-surface);
+  display: flex;
+  flex-direction: column;
 }
 
 /* --- セクション --- */
 .section {
-  padding: 4px 0 16px;
+  padding-bottom: 8px;
+  flex-shrink: 0;
+}
+
+/* ログセクションは残り高さを埋めるが、あふれないようにする */
+.section--log {
+  flex-shrink: 1;
+  overflow: hidden;
+  min-height: 0;
 }
 
 .section__title {
   font-family: var(--font-heading);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   color: var(--color-muted);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
 }
 
 /* --- 区切り線 --- */
 .divider {
   border: none;
   border-top: 1px solid var(--color-border);
-  margin: 4px 0 16px;
+  margin: 4px 0 12px;
+  flex-shrink: 0;
 }
 
 /* --- フォーム --- */
 .form-group {
-  margin-bottom: 10px;
+  margin-bottom: 6px;
+  flex: 1;
+  min-width: 0;
 }
 
 .form-label {
   display: block;
   font-family: var(--font-label);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 500;
   color: var(--color-muted);
-  margin-bottom: 4px;
+  margin-bottom: 3px;
   letter-spacing: 0.02em;
 }
 
 .form-input,
 .form-textarea {
   width: 100%;
-  padding: 7px 10px;
+  padding: 5px 10px;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: 12px;
   color: var(--color-text);
   transition: border-color 0.15s, box-shadow 0.15s;
   outline: none;
@@ -203,31 +181,44 @@ body {
   color: #b8b4af;
 }
 
-.form-textarea {
-  resize: vertical;
-  min-height: 80px;
-  line-height: 1.5;
-}
-
-/* コードペースト用テキストエリア（等幅フォント・少し背景を変える） */
+/* コードペースト用テキストエリア（等幅フォント・固定高さ） */
 .form-textarea--code {
   font-family: 'Menlo', 'Consolas', 'Monaco', monospace;
   font-size: 11px;
   background-color: #faf9f7;
-  line-height: 1.6;
+  line-height: 1.5;
+  resize: none;
+  height: 72px;
 }
 
+/* 宛先入力用テキストエリア（固定高さ） */
+.form-textarea--recipients {
+  resize: none;
+  height: 52px;
+  line-height: 1.5;
+}
+
+/* 通常のform-row（ボタン行など） */
 .form-row {
   display: flex;
   gap: 8px;
-  margin-top: 10px;
+  align-items: flex-start;
+  margin-top: 6px;
+}
+
+/* 2カラム横並び入力行（SMTP・送信フォームで縦スペース節約） */
+.form-row--inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 0;
 }
 
 /* フォームステータスメッセージ */
 .form-status {
   font-size: 11px;
-  margin-top: 6px;
-  min-height: 16px;
+  margin-top: 4px;
+  min-height: 14px;
 }
 
 .form-status--success {
@@ -243,10 +234,10 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 7px 14px;
+  padding: 5px 14px;
   border-radius: var(--radius-sm);
   font-family: var(--font-label);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   cursor: pointer;
   border: 1px solid transparent;
@@ -256,7 +247,7 @@ body {
 }
 
 .btn:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
@@ -311,16 +302,31 @@ body {
 /* 幅いっぱいボタン */
 .btn--full {
   width: 100%;
+  margin-top: 6px;
+}
+
+/* --- HTMLファイルセクション --- */
+/* D&Dゾーンとアクションエリアを横並び */
+.file-row {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
 }
 
 /* --- ドロップゾーン --- */
 .drop-zone {
+  flex: 1;
   border: 2px dashed var(--color-border);
   border-radius: var(--radius);
-  padding: 20px 16px;
+  padding: 12px 16px;
   text-align: center;
   cursor: pointer;
   transition: border-color 0.15s, background-color 0.15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
 }
 
 .drop-zone:hover,
@@ -330,22 +336,29 @@ body {
 }
 
 .drop-zone__text {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--color-text);
-  margin-bottom: 4px;
 }
 
 .drop-zone__sub {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--color-muted);
-  margin-bottom: 10px;
+}
+
+/* ファイル名表示・ブラウザ確認ボタンをまとめるサイドエリア */
+.file-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 160px;
 }
 
 /* 読み込み済みファイル名 */
 .file-name {
   font-size: 11px;
   color: var(--color-muted);
-  margin-top: 8px;
   word-break: break-all;
   min-height: 14px;
 }
@@ -356,17 +369,19 @@ body {
 
 /* --- 送信ログ --- */
 .log {
-  font-size: 12px;
+  font-size: 11px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
+  overflow-y: auto;
+  max-height: 100%;
 }
 
 .log-item {
   display: flex;
   align-items: baseline;
   gap: 6px;
-  padding: 5px 8px;
+  padding: 4px 8px;
   border-radius: var(--radius-sm);
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -408,49 +423,6 @@ body {
 
 .log-item__message {
   color: var(--color-muted);
-  font-size: 11px;
+  font-size: 10px;
   flex-shrink: 0;
-}
-
-/* --- プレビューエリア --- */
-.preview-header {
-  padding: 8px 16px;
-  border-bottom: 1px solid var(--color-border);
-  background-color: var(--color-bg);
-  flex-shrink: 0;
-}
-
-.preview-header__label {
-  font-family: var(--font-label);
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--color-muted);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.preview-body {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ブラウザ起動エリア */
-.preview-launch {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  text-align: center;
-}
-
-.preview-launch__desc {
-  font-size: 13px;
-  color: var(--color-text);
-}
-
-.preview-launch__hint {
-  font-size: 11px;
-  color: var(--color-muted);
 }

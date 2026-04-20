@@ -15,29 +15,32 @@
 </head>
 <body>
   <div class="app-wrapper">
+
     <!-- タイトルバー（macOSのhiddenInset用ドラッグ領域） -->
     <header class="app-header">
-      <!-- アプリ名はabsoluteでウィンドウ中央に配置（トラフィックライトと重ならない） -->
+      <!-- アプリ名はabsoluteでウィンドウ中央に配置 -->
       <div class="app-title">
-        <span class="app-title__icon">✉</span>
         <span class="app-title__name">HTMLSend</span>
       </div>
     </header>
 
+    <!-- コンテンツエリア（1カラム・スクロールなし） -->
     <div class="app-body">
-      <!-- 左ペイン：設定・入力フォーム -->
-      <aside class="pane pane--left">
+      <div class="content-area">
 
-        <!-- SMTP設定セクション -->
+        <!-- 1. SMTP設定 -->
         <section class="section" id="section-smtp">
           <h2 class="section__title">SMTP設定</h2>
-          <div class="form-group">
-            <label class="form-label" for="input-email">メールアドレス</label>
-            <input class="form-input" type="email" id="input-email" placeholder="example@gmail.com" autocomplete="off">
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="input-password">アプリパスワード</label>
-            <input class="form-input" type="password" id="input-password" placeholder="xxxx xxxx xxxx xxxx" autocomplete="off">
+          <!-- メールアドレスとアプリパスワードを横並びにして縦スペースを節約 -->
+          <div class="form-row form-row--inputs">
+            <div class="form-group">
+              <label class="form-label" for="input-email">メールアドレス</label>
+              <input class="form-input" type="email" id="input-email" placeholder="example@gmail.com" autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="input-password">アプリパスワード</label>
+              <input class="form-input" type="password" id="input-password" placeholder="xxxx xxxx xxxx xxxx" autocomplete="off">
+            </div>
           </div>
           <div class="form-row">
             <button class="btn btn--primary" id="btn-smtp-save">設定を保存</button>
@@ -48,61 +51,60 @@
 
         <hr class="divider">
 
-        <!-- HTMLファイルセクション -->
+        <!-- 2. HTMLファイル -->
         <section class="section" id="section-file">
           <h2 class="section__title">HTMLファイル</h2>
-          <div class="drop-zone" id="drop-zone">
-            <p class="drop-zone__text">HTMLファイルをドロップ</p>
-            <p class="drop-zone__sub">または</p>
-            <button class="btn btn--outline" id="btn-file-select">ファイルを選択</button>
-          </div>
-          <p class="file-name" id="file-name"></p>
-          <!-- HTMLコード直接ペーストエリア -->
-          <div class="form-group">
-            <label class="form-label" for="input-html-paste">HTMLを直接ペースト</label>
-            <textarea class="form-textarea form-textarea--code" id="input-html-paste" rows="6" placeholder="HTMLコードをここに貼り付け"></textarea>
+          <!-- D&DゾーンとアクションエリアをFlexで横並び -->
+          <div class="file-row">
+            <div class="drop-zone" id="drop-zone">
+              <p class="drop-zone__text">ここにドロップ</p>
+              <p class="drop-zone__sub">または</p>
+              <button class="btn btn--outline" id="btn-file-select">ファイルを選択</button>
+            </div>
+            <div class="file-side">
+              <p class="file-name" id="file-name"></p>
+              <button class="btn btn--outline" id="btn-preview" disabled>ブラウザで確認する</button>
+            </div>
           </div>
         </section>
 
         <hr class="divider">
 
-        <!-- 送信設定セクション -->
+        <!-- 3. HTMLを直接ペースト -->
+        <section class="section" id="section-paste">
+          <h2 class="section__title">HTMLを直接ペースト</h2>
+          <div class="form-group">
+            <textarea class="form-textarea form-textarea--code" id="input-html-paste" placeholder="HTMLコードをここに貼り付け"></textarea>
+          </div>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 4. 送信 -->
         <section class="section" id="section-send">
           <h2 class="section__title">送信</h2>
-          <div class="form-group">
-            <label class="form-label" for="input-subject">件名</label>
-            <input class="form-input" type="text" id="input-subject" placeholder="メールの件名">
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="input-recipients">宛先（1行1アドレス）</label>
-            <textarea class="form-textarea" id="input-recipients" rows="4" placeholder="to@example.com&#10;another@example.com"></textarea>
+          <div class="form-row form-row--inputs">
+            <div class="form-group">
+              <label class="form-label" for="input-subject">件名</label>
+              <input class="form-input" type="text" id="input-subject" placeholder="メールの件名">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="input-recipients">宛先（1行1アドレス）</label>
+              <textarea class="form-textarea form-textarea--recipients" id="input-recipients" placeholder="to@example.com&#10;another@example.com"></textarea>
+            </div>
           </div>
           <button class="btn btn--accent btn--full" id="btn-send">送信する</button>
         </section>
 
         <!-- 送信結果ログ -->
-        <section class="section" id="section-log">
+        <section class="section section--log" id="section-log">
           <div class="log" id="send-log"></div>
         </section>
 
-      </aside>
-
-      <!-- 右ペイン：ブラウザプレビュー -->
-      <main class="pane pane--right">
-        <div class="preview-header">
-          <span class="preview-header__label">プレビュー</span>
-        </div>
-        <div class="preview-body">
-          <div class="preview-launch">
-            <p class="preview-launch__desc">HTMLをデフォルトブラウザで確認します</p>
-            <button class="btn btn--outline" id="btn-preview" disabled>ブラウザで確認する</button>
-            <p class="preview-launch__hint">HTMLを読み込むとボタンが有効になります</p>
-          </div>
-        </div>
-      </main>
+      </div>
     </div>
-  </div>
 
+  </div>
   <script src="app.js"></script>
 </body>
 </html>
