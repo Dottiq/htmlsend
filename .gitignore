@@ -4,3 +4,6 @@ dist/
 *.exe
 *.zip
 .DS_Store
+# icnsは生成物なのでgit管理しない
+assets/icons/icon.icns
+assets/icons/icon.iconset/

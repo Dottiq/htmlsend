@@ -53,6 +53,7 @@ htmlsend/
 | `smtp:clear` | renderer → main | SMTP設定を削除 |
 | `mail:send` | renderer → main | メール送信実行（件名・宛先・HTML本文を渡す） |
 | `file:read` | renderer → main | HTMLファイルパスを受け取り内容を返す |
+| `preview:open` | renderer → main | HTMLを一時ファイルに書き出してブラウザで開く |
 
 ---
 
@@ -60,15 +61,20 @@ htmlsend/
 
 ### HTMLファイル読み込み
 - D&Dまたはファイル選択ダイアログ
-- 読み込み後、プレビューエリアに `<iframe>` でレンダリング
 - ファイルパスは `file:read` IPC経由で main.js が読み込む（`fs.readFileSync`）
+- 読み込んだHTMLはペーストエリア（textarea）にも反映される
+- 「ブラウザで確認する」ボタンで一時ファイルに書き出し `shell.openExternal()` で開く
+
+### HTMLコード直接入力
+- textareaに直接HTMLを貼り付け可能
+- ファイルD&Dとtextarea入力は同一の `currentHtmlBody` 変数に格納
 
 ### 宛先入力
 - テキストエリアに1行1アドレスで入力
 - 送信時に改行・カンマで分割・トリム・重複除去して配列化
 
 ### SMTP設定（アプリパスワード）
-- 入力項目：メールアドレス、アプリパスワード、差出人表示名
+- 入力項目：メールアドレス、アプリパスワード（差出人表示名は廃止済み）
 - `electron-store` に `encryptionKey` 付きで暗号化保存
 - パスワード欄は `type="password"` 表示
 - 設定済みの場合はマスク表示で確認できる
@@ -89,10 +95,11 @@ Noble（nobusue.com/tools）と統一したテイストにする。
 | `--color-bg` | `#f7f6f3` | 背景色（オフホワイト） |
 | `--color-text` | `#4a4643` | メインテキスト |
 | `--color-muted` | `#706c68` | 補足テキスト |
-| `--color-accent` | `#4a6741` | アクセント（Nobleグリーン） |
+| `--color-accent` | `#7b9eb8` | コーポレートカラー（スチールブルー） |
+| `--color-cta` | `#4a6741` | CTAボタン・送信ボタン（深緑） |
 | `--color-border` | `#e2e0db` | ボーダー |
 | `--color-error` | `#c0392b` | エラー表示 |
-| `--color-success` | `#4a6741` | 成功表示（accentと同値） |
+| `--color-success` | `#4a6741` | 成功表示（CTAと同値） |
 
 ### フォント
 - 見出し：`'Zen Kaku Gothic New', sans-serif`
@@ -102,8 +109,7 @@ Noble（nobusue.com/tools）と統一したテイストにする。
 
 ### レイアウト
 - シングルウィンドウ（960×760、最小780×600）
-- 左ペイン：設定・入力フォーム
-- 右ペイン：HTMLプレビュー（`<iframe>`）
+- 1カラム中央寄せ。スクロールなしで全要素が収まる設計
 - タイトルバー：macOSは `hiddenInset`、Windowsはデフォルト
 
 ---
