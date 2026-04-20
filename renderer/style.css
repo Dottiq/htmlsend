@@ -1,0 +1,450 @@
+/* ===================================================
+   HTMLSend — スタイルシート
+   Noble (nobusue.com/tools) テイストに合わせたデザイン
+   =================================================== */
+
+/* --- CSS変数（カラー・フォント） --- */
+:root {
+  --color-bg: #f7f6f3;
+  --color-text: #4a4643;
+  --color-muted: #706c68;
+  --color-accent: #4a6741;
+  --color-border: #e2e0db;
+  --color-error: #c0392b;
+  --color-success: #4a6741;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f0ede8;
+
+  --font-heading: 'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
+  --font-body: 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+  --font-label: 'Inter', 'Noto Sans JP', sans-serif;
+
+  --radius: 6px;
+  --radius-sm: 4px;
+  --shadow-sm: 0 1px 3px rgba(74, 70, 67, 0.08);
+  --shadow-md: 0 2px 8px rgba(74, 70, 67, 0.12);
+
+  /* macOS hiddenInset用のタイトルバー高さ */
+  --titlebar-height: 38px;
+}
+
+/* --- リセット・ベース --- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- アプリ全体レイアウト --- */
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* --- ヘッダー（タイトルバー） --- */
+.app-header {
+  /* macOSのhiddenInset用にドラッグ可能にする */
+  -webkit-app-region: drag;
+  height: var(--titlebar-height);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  background-color: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.app-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  /* タイトル内のボタン等はドラッグ無効化 */
+  -webkit-app-region: no-drag;
+}
+
+.app-title__icon {
+  font-size: 14px;
+  color: var(--color-accent);
+}
+
+.app-title__name {
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: 0.02em;
+}
+
+/* --- メインボディ（左右ペイン） --- */
+.app-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* --- 左ペイン --- */
+.pane--left {
+  width: 340px;
+  min-width: 280px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background-color: var(--color-bg);
+  border-right: 1px solid var(--color-border);
+  padding: 20px 16px;
+  gap: 0;
+}
+
+/* スクロールバーのスタイル（macOS） */
+.pane--left::-webkit-scrollbar {
+  width: 4px;
+}
+.pane--left::-webkit-scrollbar-track {
+  background: transparent;
+}
+.pane--left::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 2px;
+}
+
+/* --- 右ペイン（プレビュー） --- */
+.pane--right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--color-surface);
+}
+
+/* --- セクション --- */
+.section {
+  padding: 4px 0 16px;
+}
+
+.section__title {
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+/* --- 区切り線 --- */
+.divider {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 4px 0 16px;
+}
+
+/* --- フォーム --- */
+.form-group {
+  margin-bottom: 10px;
+}
+
+.form-label {
+  display: block;
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-muted);
+  margin-bottom: 4px;
+  letter-spacing: 0.02em;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 7px 10px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 13px;
+  color: var(--color-text);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  outline: none;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px rgba(74, 103, 65, 0.15);
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: #b8b4af;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.5;
+}
+
+.form-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* フォームステータスメッセージ */
+.form-status {
+  font-size: 11px;
+  margin-top: 6px;
+  min-height: 16px;
+}
+
+.form-status--success {
+  color: var(--color-success);
+}
+
+.form-status--error {
+  color: var(--color-error);
+}
+
+/* --- ボタン --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-label);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background-color 0.15s, border-color 0.15s, opacity 0.15s;
+  white-space: nowrap;
+  -webkit-app-region: no-drag;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* プライマリボタン */
+.btn--primary {
+  background-color: var(--color-text);
+  color: var(--color-bg);
+  border-color: var(--color-text);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background-color: #3a3632;
+  border-color: #3a3632;
+}
+
+/* アクセントボタン（送信） */
+.btn--accent {
+  background-color: var(--color-accent);
+  color: #ffffff;
+  border-color: var(--color-accent);
+}
+
+.btn--accent:hover:not(:disabled) {
+  background-color: #3d5836;
+  border-color: #3d5836;
+}
+
+/* アウトラインボタン */
+.btn--outline {
+  background-color: transparent;
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+.btn--outline:hover:not(:disabled) {
+  background-color: var(--color-surface-hover);
+}
+
+/* ゴーストボタン */
+.btn--ghost {
+  background-color: transparent;
+  color: var(--color-muted);
+  border-color: var(--color-border);
+}
+
+.btn--ghost:hover:not(:disabled) {
+  background-color: var(--color-surface-hover);
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+/* 幅いっぱいボタン */
+.btn--full {
+  width: 100%;
+}
+
+/* --- ドロップゾーン --- */
+.drop-zone {
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius);
+  padding: 20px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.drop-zone:hover,
+.drop-zone--active {
+  border-color: var(--color-accent);
+  background-color: rgba(74, 103, 65, 0.04);
+}
+
+.drop-zone__text {
+  font-size: 13px;
+  color: var(--color-text);
+  margin-bottom: 4px;
+}
+
+.drop-zone__sub {
+  font-size: 11px;
+  color: var(--color-muted);
+  margin-bottom: 10px;
+}
+
+/* 読み込み済みファイル名 */
+.file-name {
+  font-size: 11px;
+  color: var(--color-muted);
+  margin-top: 8px;
+  word-break: break-all;
+  min-height: 14px;
+}
+
+.file-name--loaded {
+  color: var(--color-success);
+}
+
+/* --- 送信ログ --- */
+.log {
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.log-item {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 5px 8px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.log-item--success {
+  border-color: rgba(74, 103, 65, 0.3);
+  background-color: rgba(74, 103, 65, 0.04);
+}
+
+.log-item--error {
+  border-color: rgba(192, 57, 43, 0.3);
+  background-color: rgba(192, 57, 43, 0.04);
+}
+
+.log-item__badge {
+  font-family: var(--font-label);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.log-item--success .log-item__badge {
+  color: var(--color-success);
+}
+
+.log-item--error .log-item__badge {
+  color: var(--color-error);
+}
+
+.log-item__address {
+  color: var(--color-text);
+  font-family: var(--font-label);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.log-item__message {
+  color: var(--color-muted);
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+/* --- プレビューエリア --- */
+.preview-header {
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  flex-shrink: 0;
+}
+
+.preview-header__label {
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.preview-body {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+.preview-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: none;
+}
+
+.preview-iframe--visible {
+  display: block;
+}
+
+.preview-empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--color-muted);
+  font-size: 13px;
+  line-height: 1.7;
+  pointer-events: none;
+}
+
+.preview-empty--hidden {
+  display: none;
+}

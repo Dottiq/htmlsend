@@ -1,0 +1,36 @@
+{
+  "name": "htmlsend",
+  "version": "1.0.0",
+  "description": "HTMLメールテスト送信デスクトップアプリ",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:mac": "electron-builder --mac",
+    "build:win": "electron-builder --win"
+  },
+  "keywords": ["electron", "email", "html-mail"],
+  "author": "Dottiq",
+  "license": "MIT",
+  "dependencies": {
+    "electron-store": "^8.2.0",
+    "nodemailer": "^6.9.13"
+  },
+  "devDependencies": {
+    "electron": "^29.4.6",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.dottiq.htmlsend",
+    "productName": "HTMLSend",
+    "directories": {
+      "output": "dist"
+    },
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": ["dmg", "zip"]
+    },
+    "win": {
+      "target": ["nsis"]
+    }
+  }
+}

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- セキュリティ: インラインスクリプト・外部リソースを制限 -->
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-src blob: data:;">
+  <title>HTMLSend</title>
+  <!-- Google Fonts（オフライン時はフォールバックフォントを使用） -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-wrapper">
+    <!-- タイトルバー（macOSのhiddenInset用ドラッグ領域） -->
+    <header class="app-header">
+      <div class="app-title">
+        <span class="app-title__icon">✉</span>
+        <span class="app-title__name">HTMLSend</span>
+      </div>
+    </header>
+
+    <div class="app-body">
+      <!-- 左ペイン：設定・入力フォーム -->
+      <aside class="pane pane--left">
+
+        <!-- SMTP設定セクション -->
+        <section class="section" id="section-smtp">
+          <h2 class="section__title">SMTP設定</h2>
+          <div class="form-group">
+            <label class="form-label" for="input-email">メールアドレス</label>
+            <input class="form-input" type="email" id="input-email" placeholder="example@gmail.com" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="input-password">アプリパスワード</label>
+            <input class="form-input" type="password" id="input-password" placeholder="xxxx xxxx xxxx xxxx" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="input-sender-name">差出人表示名</label>
+            <input class="form-input" type="text" id="input-sender-name" placeholder="Your Name" autocomplete="off">
+          </div>
+          <div class="form-row">
+            <button class="btn btn--primary" id="btn-smtp-save">設定を保存</button>
+            <button class="btn btn--ghost" id="btn-smtp-clear">削除</button>
+          </div>
+          <p class="form-status" id="smtp-status"></p>
+        </section>
+
+        <hr class="divider">
+
+        <!-- HTMLファイルセクション -->
+        <section class="section" id="section-file">
+          <h2 class="section__title">HTMLファイル</h2>
+          <div class="drop-zone" id="drop-zone">
+            <p class="drop-zone__text">HTMLファイルをドロップ</p>
+            <p class="drop-zone__sub">または</p>
+            <button class="btn btn--outline" id="btn-file-select">ファイルを選択</button>
+          </div>
+          <p class="file-name" id="file-name"></p>
+        </section>
+
+        <hr class="divider">
+
+        <!-- 送信設定セクション -->
+        <section class="section" id="section-send">
+          <h2 class="section__title">送信</h2>
+          <div class="form-group">
+            <label class="form-label" for="input-subject">件名</label>
+            <input class="form-input" type="text" id="input-subject" placeholder="メールの件名">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="input-recipients">宛先（1行1アドレス）</label>
+            <textarea class="form-textarea" id="input-recipients" rows="4" placeholder="to@example.com&#10;another@example.com"></textarea>
+          </div>
+          <button class="btn btn--accent btn--full" id="btn-send">送信する</button>
+        </section>
+
+        <!-- 送信結果ログ -->
+        <section class="section" id="section-log">
+          <div class="log" id="send-log"></div>
+        </section>
+
+      </aside>
+
+      <!-- 右ペイン：HTMLプレビュー -->
+      <main class="pane pane--right">
+        <div class="preview-header">
+          <span class="preview-header__label">プレビュー</span>
+        </div>
+        <div class="preview-body">
+          <iframe class="preview-iframe" id="preview-iframe" title="HTMLプレビュー" sandbox="allow-same-origin"></iframe>
+          <div class="preview-empty" id="preview-empty">
+            <p>HTMLファイルを読み込むと<br>ここにプレビューが表示されます</p>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
