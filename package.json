@@ -28,6 +28,7 @@
     "mac": {
       "category": "public.app-category.utilities",
       "icon": "assets/icons/icon.icns",
+      "identity": "SWANKY SWAN K.K. (UC89MU83FW)",
       "target": ["dmg", "zip"]
     },
     "win": {
